@@ -1,5 +1,7 @@
 ### SQLite学习
 
+<br>
+
 #### SQLite介绍
 
 * SQLite是一款轻型的数据库，是遵守ACID的关联式数据库管理系统，它的设计目标是嵌入式的，而且目前已经在很多嵌入式产品中使用了它，它占用资源非常的低，在嵌入式设备中，可能只需要几百K的内存就够了。它能够支持Windows/Linux/Unix等等主流的操作系统，同时能够跟很多程序语言相结合，比如Tcl、PHP、Java、C++、.Net等，还有ODBC接口，同样比起 Mysql、PostgreSQL这两款开源世界著名的数据库管理系统来讲，它的处理速度比他们都快。
@@ -7,6 +9,8 @@
 * SQLite和C/S模式的数据库软件不同，它是进程内的数据库引擎，因此不存在数据库的客户端和服务器。使用SQLite一般只需要带上它的一个动态库，就可以享受它的全部功能。而且那个动态库的尺寸也挺小，以版本3.6.11为例，Windows下487KB、Linux下347KB。
 
 * SQLite的核心引擎本身不依赖第三方的软件，使用它也不需要"安装"。数据库中所有的信息（比如表、视图等）都包含在一个文件内。这个文件可以自由复制到其它目录或其它机器上。
+
+<br>
 
 #### SQLite数据类型
 
@@ -30,11 +34,15 @@ DATA ：包含了年份、月份、日期。
 
 TIME：包含了小时、分钟、秒。
 
+<br>
+
 #### Android操作SQLite
 
 SQLiteDatabase代表数据库对象，提供了操作数据库的一些方法，在SDK路径下有SQLite3工具，通过它可以创建数据库、创建表及执行一些SQL语句
 
 SQLiteDatabase 常用方法:
+
+<br>
 
     openOrCreateDatabase(String path,SQLiteDatabase.CursorFactory  factory)  //打开或创建数据库
 
@@ -49,6 +57,8 @@ SQLiteDatabase 常用方法:
     execSQL(String sql)  //执行一条SQL语句
 
     close()  //关闭数据库
+
+<br>
 
 #### 创建数据库的两种方法
 
@@ -90,13 +100,21 @@ SQLiteDatabase 常用方法:
       }
     }
 
+<br><br>
+
 #### 数据库增删查改的两种方法
 
+<br>
+
+*****
+
+<br>
 * 使用SQLiteDatabase对象调用execSQL做增删改,调用rawQuery做查询
 ,特点是增删改没有返回值,无法判断sql语句是否执行成功
 
+<br>
 例：
-
+<br>
 InfoBean.Java
 
     public class InfoBean{
@@ -104,7 +122,7 @@ InfoBean.Java
       public String phone;
     }
 
-
+<br>
 ---------------------------查询--------------------------
 
     MySqliteOpenHelper ms=new MySqliteOpenHelper(context);
@@ -124,6 +142,7 @@ InfoBean.Java
         cursor.close();
     }
 
+<br>
 ---------------------------添加----------------------------
 
     public void add(InfoBean bean){
@@ -134,3 +153,152 @@ InfoBean.Java
       db.execSQL("insert into info(name,phone) value(?,?);"new Object[]{bean.name,bean.phone});
       db.close();      
     }
+
+<br>
+--------------------------删除-----------------------------
+
+    public void del(String name){
+      SQLiteDatabase db=ms.getReadableDatabase();
+      //db.execSQL(sql,bindArgs);
+      //sql:  执行的sql语句
+      //bindArgs:  sql语句中的占位符      
+      db.execSQL("delete from info where name=?;",new Object[]{name});
+      db.close();
+    }
+
+<br>
+-------------------------更新------------------------------
+
+    public void update(InfoBean info){
+      SQLiteDatabase db=ms.getReadableDatabase();
+      db.execSQL("update info set phone=? where name=?;",new Object[]{bean.phone,bean.name});
+      db.close;
+    }
+
+<br><br>
+
+*****
+
+<br>
+* 使用SQLiteDatabase对象调用insert,update,delete,query方法做增删查改。特点：增删查改有了返回值，可以判断sql语句是否执行成功，但查询不灵活，无法做多表查询。
+
+<br>
+例：
+
+InfoBean.Java
+
+    public class InfoBean{
+      public String name;
+      public String phone;
+    }
+
+<br>
+------------------------添加------------------------------
+
+    public boolean add(InfoBean bean){
+      SQLiteDatabase db=ms.getReadableDatabase();
+      ContentValues values=new ContentValues();  //通过map封装的对象，用来存放值
+      values.put("name",bean.name);
+      values.put("phone",bean.phone);
+      //table: 表名 ，nullColumnHack: 可以为空，表示添加一个空行，values: 数据一行的值，返回值： 代表添加的这新行的ID,-1代表添加失败 
+      long result=db.insert("info",null,values);
+      db.close();
+
+      if(result!=-1){
+        return true;
+      }else{
+        return false;
+      }
+    }
+
+<br>
+-----------------------删除-------------------------------
+
+    public int del(String name){
+      SQLiteDatabase db=ms.getReadableDatabase();
+      //table: 表名 ，whereClause: 删除条件，whereArgs: 条件的占位符的参数，返回值： 成功删除多少行       
+      int result=db.delete("info","name=?",new String[]{name});
+      db.close();
+
+      return result;
+    }
+
+<br>
+-----------------------更新-------------------------------
+
+    public int update(InfoBean bean){
+      SQLiteDatabase db=ms.getReadableDatabase();
+      ContentValues values=new ContentValues();  //通过map封装的对象，用来存放值
+      values.put("name",bean.name);
+      //table: 表名，values: 更新的值，whereClause: 更新的条件，whereArgs: 更新的条件的占位符的值，返回值： 成功修改多少行 
+      int result=db.update("info",values,"name=?",new String[]{bean.name});      
+      db.close();
+      return result;
+    }
+
+<br>
+-----------------------查询--------------------------------
+
+    public void query(String name){
+      SQLiteDatabase db=ms.getReadableDatabase();
+      //table: 表名，columns: 查询的列名 为null代表查询所有的列,selection: 查询的条件,selectionArgs: 条件占位符的参数值,groupBy: 按什么字段分组，having: 分组的条件，orderBy: 按什么字段排序
+      Cursor cursor=db.query("info",new String[]{"_id","name","phone"},"name=?",new String[]{name},null,null,"_id_desc");      
+      if(cursor!=null && cursor.getCount()>0){
+        while(cursor.moveToNext()){
+          int id=cursor.getInt(0);
+          String name_str=cursor.getString(1);
+          String phone=cursor.getString(2);
+        }
+        cursor.close();
+      }
+      db.close();
+    }
+
+<br><br>
+#### 游标常用方法:
+
+|方法名|描述|
+|------|--:|
+|getCount()|获得总的数据项数|
+|isFirst()|判断是否为第一条记录|
+|isLast()|判断是否为最后一条记录|
+|moveToFirst()|移动到第一条记录|
+|moveToLast()|移动到最后一条记录|
+|move(int offset)|移动到指定记录|
+|moveToNext()|移动到下一条记录|
+|moveToPrevious()|移动到上一条记录|
+|getColumnIndexOrThrow(String  columnName)|根据列名称获得列索引|
+|getInt(int columnIndex)|获得指定列索引的int类型值|
+|getString(int columnIndex)|获得指定列缩影的String类型值|
+
+<br><br>
+#### 数据库中的事务
+
+事务: 执行多行sql语句，要么同时成功，或同时失败。
+
+    db.beginTransaction();  //开启一个数据库事务
+    try{
+      db.execSQL("update account set money=money-200 where name=?",new String[]{"小明"});
+      db.execSQL("update account set money=money+200 where name=?",new String[]{"小张"});
+      db.setTransactionSuccessful();  //标记事务中的sql语句全部执行成功
+    }finally{
+      db.endTransaction();  //判断事务的标记是否成功，如果不成功，回滚错误之前执行的sql语句
+    }
+
+
+<br><br>
+帮助类的`getReadableDatabase`和`getWritableDatabase`都可以获取数据库操作对象`SQLiteDatabase`
+
+区别：
+
+`getReadableDatabase`先尝试以读写的方式打开数据库，若磁盘已满，则重新以只读的方式打开。
+
+`getWritableDatabase`直接以读写的方式打开数据库，若磁盘已满，则报错。
+ 
+
+  
+
+      
+
+
+  

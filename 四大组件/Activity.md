@@ -103,3 +103,5 @@ AndroidManifest.xml
     </activity>
 
 `<action>`元素指定程序的入口。`<category>`指出该activity应该能让系统启动应用程序(允许用户启动activity)。
+
+ 

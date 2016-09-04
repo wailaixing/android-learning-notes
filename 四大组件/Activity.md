@@ -5,6 +5,8 @@
 
 Activity是Context的子类，同时实现了window.callback,keyevent.callback,可以处理与窗体用户交互的事件。
 
+<br>
+
 #### Activity与View的区别
 1. Activity是四大组件中唯一一个用来和用户进行交互的组件。可以说Activity就是android的视图层。
 
@@ -12,6 +14,7 @@ Activity是Context的子类，同时实现了window.callback,keyevent.callback,�
 
 3. 每个Activity内部都有一个Window对象， Window对象包含了一个DecorView(实际上就是FrameLayout)，我们通过setContentView给Activity设置显示的View实际上都是加到了DecorView中。
 
+<br>
 #### Activity生命周期
 ![framework](../image/activity1.png)
 
@@ -27,6 +30,7 @@ Activity是Context的子类，同时实现了window.callback,keyevent.callback,�
 |||||
 |onRestart()|在Activity停止后，在再次启动之前被调用。之后执行onStart().||onStart()|
 
+<br>
 #### Activity 四种启动模式
 
 Task 打开一个Activity叫做进栈，关闭一个Activity叫做处出栈，任务是维护的Activity、操作的Activity永远是栈顶的Activity，程序退出任务栈被清空。
@@ -41,6 +45,7 @@ Task 打开一个Activity叫做进栈，关闭一个Activity叫做处出栈，�
 #### 在配置文件中声明Activity
 AndroidManifest.xml
 
+```xml
     <manifest...>
       <application...>
         <activity android:name="xxx">
@@ -48,9 +53,11 @@ AndroidManifest.xml
       </application...>
       ...
     </manifest>
+```
 
 可以给这个元素加入许多其他属性,如图标，名称或是activity的主题风格
 
+```xml
     <activity android:allowTaskReparenting=["true" | "false"]
       android:alwaysRetainTaskState=["true" | "false"]
       android:clearTaskOnLaunch=["true" | "false"]
@@ -89,19 +96,23 @@ AndroidManifest.xml
                                      "adjustResize", "adjustPan"] >   
 
     </activity>
+```
 
 #### filter
 `<activity>`也可以用很多`<intent-filter>`来指定其他的组件怎样激活它。
 
 通过android SDK tools创建一个程序，主activity将自动包含一个被分类为“launcher”的intent filter
 
+```xml
     <activity android:name="xxx" android:icon="@drawable/app_icon">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category Android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
+```
 
 `<action>`元素指定程序的入口。`<category>`指出该activity应该能让系统启动应用程序(允许用户启动activity)。
+
 
  

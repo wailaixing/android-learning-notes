@@ -117,28 +117,28 @@ View动画有四种变换效果，透明、旋转、位移、缩放。分别对�
 
 * `<alpha>` 透明动画，对应Alpha类。
 
-        `android:fromAlpha`动画的透明度起始值
-        `android:toAlpha`动画的透明度的结束值
+        android:fromAlpha动画的透明度起始值
+        android:toAlpha动画的透明度的结束值
 
 * `<translate>` 平移动画，对应TranslateAnimation类
 
-        `android:fromXDelta`表示x的起始值
-        `android:toXDelta`表示x的结束值
-        `android:fromYDelta`表示y的起始值
-        `android:toYDelta`表示y的结束值
+        android:fromXDelta表示x的起始值
+        android:toXDelta表示x的结束值
+        android:fromYDelta表示y的起始值
+        android:toYDelta表示y的结束值
 * `<rotate>` 旋转动画.对应RotateAnimation类
 
-        `android:fromDegrees`表示旋转开始的角度
-        `android:toDegrees`表示旋转结束的角度
-        `android:pivotX`表示旋转的中心的X坐标
-        `android:pivotY`表示旋转的中心的y坐标
+        android:fromDegrees表示旋转开始的角度
+        android:toDegrees表示旋转结束的角度
+        android:pivotX表示旋转的中心的X坐标
+        android:pivotY表示旋转的中心的y坐标
 
 * `<scale>` 缩放动画，对应ScaleAnimation类
 
-        `android:fromXScale`表示水平方向缩放的起始值
-        `android:toXScale`表示水平方向缩放的结束值
-        `android:fromYScale`表示垂直方向缩放的起始值
-        `android:toYScale`表示垂直方向缩放的结束值
+        android:fromXScale表示水平方向缩放的起始值
+        android:toXScale表示水平方向缩放的结束值
+        android:fromYScale表示垂直方向缩放的起始值
+        android:toYScale表示垂直方向缩放的结束值
 
 使用方法:
 

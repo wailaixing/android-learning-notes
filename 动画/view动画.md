@@ -77,3 +77,132 @@ View动画有四种变换效果，透明、旋转、位移、缩放。分别对�
 在 res/ 下创建anim文件夹，在anim下创建xml文件。
 
     <?xml version="1.0" encoding="utf-8"?>
+    <set xmlns:android="http://schemas.android.com/apk/res/android"
+        android:interpolator="@[package:]anim/interpolator_resource"
+        android:shareInterpolator=["true"|"false"] >
+        <alpha
+            android:fromAlpha="float"
+            android:toAlpha="float" />
+        <scale
+            android:fromXScale="float"
+            android:toXScale="float"
+            android:fromYScale="float"
+            android:toYScale="float"
+            android:pivotX="float"
+            android:pivotY="float" />
+        <translate
+            android:fromDegrees="float"
+            android:toDegrees="float"
+            android:pivotX="float"
+            android:pivotY="float" />
+        <set>
+            ...
+        </set>
+    </set>
+
+<set>标签代表动画集合，对应AnimationSet类，内部也可以嵌套其他动画集合
+
+<br>
+标签属性含义:
+
+`android:interpolator`  动画集合所用的插值器，插值器是影响动画的速度
+
+`android:shareInterpolator`  表示集合中的动画是否和集合共用一个插值器，若为false或集合没有插值器，子动画需要单独定义插值器或默认值
+
+`android:duration`  表示动画持续的时间
+
+`android:fillAfter`  表示动画结束以后View是否停留在结束位置
+
+<br>
+
+* `<alpha>` 透明动画，对应Alpha类。
+
+        `android:fromAlpha`动画的透明度起始值
+        `android:toAlpha`动画的透明度的结束值
+
+* `<translate>` 平移动画，对应TranslateAnimation类
+
+        `android:fromXDelta`表示x的起始值
+        `android:toXDelta`表示x的结束值
+        `android:fromYDelta`表示y的起始值
+        `android:toYDelta`表示y的结束值
+* `<rotate>` 旋转动画.对应RotateAnimation类
+
+        `android:fromDegrees`表示旋转开始的角度
+        `android:toDegrees`表示旋转结束的角度
+        `android:pivotX`表示旋转的中心的X坐标
+        `android:pivotY`表示旋转的中心的y坐标
+
+* `<scale>` 缩放动画，对应ScaleAnimation类
+
+        `android:fromXScale`表示水平方向缩放的起始值
+        `android:toXScale`表示水平方向缩放的结束值
+        `android:fromYScale`表示垂直方向缩放的起始值
+        `android:toYScale`表示垂直方向缩放的结束值
+
+使用方法:
+
+	Button button=(Button)findViewById(R.id.button);
+	Animation anim=AnimationUtils.loadAnimation(this,R.anim.animation_button);
+	button.startAnimation(anim);
+
+
+****
+
+
+#### 特殊的Animation
+
+* layoutAnimation
+
+layoutAnimation作用于ViewGroup，使其每个子元素都拥有动画效果。通常用于ListView.
+
+用法:
+
+1. 定义一个LayoutAnimation
+
+
+    // res/anim/anim_layout
+    <layoutAnimation
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:delay="0.5"  //表示子动画开始的延迟
+        android:animationOrder="normal"  //表示子动画的顺序，选项分别为normal、random、reverse
+        android:animation=@anim/anim_item" />
+
+2.为子元素指定相应的动画
+
+
+    // res/anim/anim_item
+    <?xml version="1.0" encoding="utf-8"?>
+    <set xmlns:android="http://schemas.android.com/apk/res/android"
+        android:duration="1000"
+        android:interpolator="@android:anim/accelerate_interpolator"
+        android:shareInterpolator="true">
+        <alpha
+            android:fromAlpha="0.0"
+            android:toAlpha="1.0"
+            />
+        <scale
+            android:fromXScale="0.5"
+            android:toXScale="1.5"
+            />
+    </set>
+
+3. 为ViewGroup指定android:layoutAnimaation属性。
+
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layoutAnimation="@anim/anim_layout"
+        />
+
+除了XML外，也可以通过LayoutAnimationController来实现。
+
+    ListView listView=(ListView)findViewById(R.id.listview);
+    Animation animation=AnimationUtils.loadAnimation(this,R.anim.anim_item);
+    LayoutAnimationController controller=new LayoutAnimationController(animation);
+    controller.setDelay(0.5f);
+    controller.setOrder(LayoutAnimationController.ORDER_NORMAL);
+    listView.setLayoutAnimation(controller);
+    
+    

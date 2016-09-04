@@ -55,18 +55,18 @@ View动画有四种变换效果，透明、旋转、位移、缩放。分别对�
 
 通过AnimationSet,将动画以组合的形式展现:
 
-        AnimationSet as=new AnimationSet(true);
-        as.setDuration(1000);
+    AnimationSet as=new AnimationSet(true);
+    as.setDuration(1000);
 
-        AlphaAnimation aa=new AlphaAnimation(0,1);
-        aa.setDuration(1000);
-        as.addAnimation(aa);
+    AlphaAnimation aa=new AlphaAnimation(0,1);
+    aa.setDuration(1000);
+    as.addAnimation(aa);
 
-        TranslateAnimation ta=new TranslateAnimation(0,100,0,100);
-        ta.setDuration(1000);
-        as.addAnimation(ta);
+    TranslateAnimation ta=new TranslateAnimation(0,100,0,100);
+    ta.setDuration(1000);
+    as.addAnimation(ta);
 
-        view.startAnimation(as);
+    view.startAnimation(as);
 
 <br>
 

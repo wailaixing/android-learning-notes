@@ -101,7 +101,7 @@ AndroidManifest.xml
 #### filter
 `<activity>`也可以用很多`<intent-filter>`来指定其他的组件怎样激活它。
 
-通过android SDK tools创建一个程序，主activity将自动包含一个被分类为“launcher”的intent filter
+通过android SDK tools创建一个程序，主activity将自动包含一个被分类为“launcher”的`<intent filter>`
 
 ```xml
     <activity android:name="xxx" android:icon="@drawable/app_icon">
@@ -113,6 +113,8 @@ AndroidManifest.xml
 ```
 
 `<action>`元素指定程序的入口。`<category>`指出该activity应该能让系统启动应用程序(允许用户启动activity)。
+
+详见 ![intent](./intent.md)
 
 
  

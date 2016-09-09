@@ -116,5 +116,232 @@ AndroidManifest.xml
 
 详见 ![intent](./intent.md)
 
+****
+#### 启动、关闭 Activity
 
- 
+Activity启动有两个方法：
+> * `startActivity(Intent intent);`  //启动其他 Activity
+> * `startSctivityForResult(Intent intent,int requestCode);`  //以指定的请求码(requestCode)启动Activity,而且程序会等到新启动Activity的结果(通过重写requestCode()来获取)。
+
+**例：短信发送器**
+
+(1 ) 写MainActivity页面:
+```xml
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <EditText
+            android:id="@+id/et_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入要发送的号码 " />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/et_number"
+            android:layout_alignParentRight="true"
+            android:onClick="click"
+            android:text="+" />
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/et_content"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:gravity="top"
+        android:hint="请输入要发送的内容 " />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="insert"
+        android:text="插入短信模板" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="send"
+        android:text="发送" />
+
+</LinearLayout>
+```
+
+(2 ) 通过ListView完成联系人页面
+(3 ) 写MainActivity逻辑
+```java
+import android.app.Activity;
+import android.content.Intent;
+import android.view.View;
+import android.widget.EditText;
+
+public class MainActivity extends Activity {
+	private EditText et_number;	
+	private EditText et_content; 	
+	@Override	
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);		
+		setContentView(R.layout.activity_main);				                        //显示短信发送的内容		
+		et_content = (EditText) findViewById(R.id.et_content);				        //显示号码 		
+		et_number = (EditText) findViewById(R.id.et_number);		 			
+	} 	
+	//点击按钮 跳转到联系人页面  	
+	public void click(View v){		
+		//创建一个意图对象  跳转联系人页面 		
+		Intent intent = new Intent(this,ContactActivity.class);		
+		//如果你调用这个方法(startActivity())  就是简单开启页面  不能拿到返回的数据  注意：如果你想开启一个activity 并且想要获取开启的这个activity返回的数据 要调用这个方法 				
+		startActivityForResult(intent, 1);
+		//		startActivity(intent);	
+	}		
+	//点击按钮 实现发送短信短信的逻辑 	
+	public void send(View v){		
+		//TODO 一会实现 	
+	}		
+	
+	//点击按钮 打开插入短信模板 页面	
+	public void insert(View v){		
+		Intent intent = new Intent(this,SmsTemplateActivity.class);		
+		startActivityForResult(intent, 2);				
+	}				 	
+	
+	//当这个activity(MainActivity) 开启联系人页面时   当联系人页面关闭的时候这个方法会调用	
+	@Override	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {				
+		System.out.println("onActivityResult");				
+		/*if (resultCode == 10) {			
+		  //代表这个数据 是从联系人页面获取的 			
+		 //(1)取出我们在联系人页面设置的数据  			
+		 String phone = data.getStringExtra("phone");			
+		 et_number.setText(phone);		
+		 }else if (resultCode == 20) {			
+		 //(2)把短信模板页面的数据显示到et_content控件上 			
+		 String smscontent = data.getStringExtra("smscontent");			
+		 et_content.setText(smscontent);								
+		 }		
+		 */				
+		if (requestCode == 1) {			
+			//代表请求联系人页面  			
+			//(1)取出我们在联系人页面设置的数据  			
+			String phone = data.getStringExtra("phone");			
+			et_number.setText(phone);		
+		}else if(requestCode == 2){			
+			//请求短信模板页面 			
+			//(2)把短信模板页面的数据显示到et_content控件上 			
+			String smscontent = data.getStringExtra("smscontent");			
+			et_content.setText(smscontent);		
+		}						
+		super.onActivityResult(requestCode, resultCode, data);	
+	}	
+
+}
+```
+
+(4 ) 写短信页面，通过一个ListView展示
+```java
+public class SmsTemplateActivity extends Activity { 		
+	String objects[] = {"我在开会，请稍后在打...","我在吃饭，请稍后在打...","我在打酱油，请稍后在打...","我在约会，请稍后在打...","我在打麻将，请稍后在打..."};	
+	@Override	
+	protected void onCreate(Bundle savedInstanceState) {		
+		super.onCreate(savedInstanceState);				
+		//加载这个布局 		
+		setContentView(R.layout.activity_smstemplate);				
+		//(1)找到listview		
+		ListView lv = (ListView) findViewById(R.id.lv);				
+		//(2)把我们定义的好数据显示到listview上 		
+		lv.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.smstemlpate_item, objects));		
+		//(3)给listview设置点击事件  		
+		lv.setOnItemClickListener(new OnItemClickListener() { 			
+			@Override			
+			public void onItemClick(AdapterView<?> parent, View view,int position, long id) {				
+				//(4)取出点击条目的数据 				
+				String smscontent = objects[position];				
+				//(5)当页面关闭的时候把数据返回 				
+				Intent intent = new Intent();				
+				intent.putExtra("smscontent", smscontent);				
+				//(6)把数据返回给调用者  				
+				setResult(20, intent);				
+				//(7)关闭这个Activity 				
+				finish();											
+			}
+		});
+	}
+}
+```
+
+(5 ) 实现短信发送
+```java
+	//(2)实现发送短信的功能   smsManager 获取这个类的实例		
+	SmsManager smsManager = SmsManager.getDefault();				
+	//(3)分割短信  分条发送 		
+	ArrayList<String> divideMessages = smsManager.divideMessage(content);				
+	for (String div : divideMessages) {			
+	//（4）发送短信			
+	smsManager.sendTextMessage(number, null, div, null, null);				
+	}
+```
+
+**注：**
+权限: `android:permission.SEND_SMS`
+
+****
+Activity关闭的两个方法：
+> * `finish();`  //结束当前的Activity
+> * `finishActivity(int requestCode);`  //结束以startActivityForResult(Intent intent,int requestCode);方法启动Activity
+
+****
+#### Activity间传递数据
+
+Activity之间传递数据使用Intent，将数据放入Intent之中就可。Intent提供了了一些重载的方法：
+
+> * `putExtra(Bundle data);`  //向Intent中放入需要传递的数据包
+> * `Bundle getExtra();`  //取出Intent 中传递的数据包
+> * `putExtra(String key,xxx value);`  //向Intent中放入key-value类型的数据
+> * `getxxxExtra(String key);`  //从Intent中按key取出指定类型的数据
+
+`Bundle`中存取数据：
+> * `putXxx(String key,Xxx data);`  //向Bundle放入数据
+> * `putSerializable(String key,Serializable data);`  //向Bundle中放入一个可序列化的对象
+> * `getXxx(String key);`  //从Bundle中取出数据
+> * `getSerializzble(String key,Serializable data);`  //从Bundle中取出一个可序列化的对象
+
+**例:**
+
+Intent中携带数据
+```java
+Person p = new Person(name.getText().toString(),passwd.getText().toString,gender); 
+//创建一个Bundle对象
+Bundle data = new Bundle();
+data.putSerializable("person",p);
+//创建一个Intent
+Intent intent = new Intent(Test.this,Result.class);
+intent.putExtra(data);
+startActivity(intent);
+```
+
+接收数据
+```java
+//获取启动该Activity的Intent
+Intent intent = getIntent();
+//通过Intent取出所携带的Bundle中的数据
+Person p = (Person)intent.getSerializableExtra("person");
+String name = p.getName();
+String passwd = p.getPasswd();
+String sex = p.getGender();
+```
+
+****
+#### 启动其他Avtivity并返回结果
+Activity提供一个`startActivityForResult(Intent intent,int requestCode)`方法来启动其他的Activity。该方法启动指定Activity，而且获得指定的Activity返回的结果。
+为了获取被启动的Activity所返回的数据，两方面:
+> * 重写`onActivityResult(int requestCode,int resultCode,Intent intent);`，当被启动的Activity返回结果时，该方法被调用。`requestCode`代表请求码，`resultCode`代表Activity返回的结果码。
+> * 被启动的Activity要调用`setResult()`，设置处理结果和`ResultCode`。
+
+一个Activity可能需要多个`startActivityForResult()`开启多个Activity。当这些新Activity关闭后，系统会回调初Activity的`onActivityResult()`。为了知道这个方法是由哪个Activity触发的，可以利用`RequestCode`或者`ResultCode`，见上例 (短信发送器)。

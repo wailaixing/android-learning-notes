@@ -62,13 +62,40 @@ Intent 中的`Action`、`Categroy`属性是Intent的启动要求，每个Intent 
 |:---:|:---:|:---:|
 |ACTION_MAIN|android.intent.action.MAIN|程序入口|
 |ACTION_VIEW|android.intent.action.VIEW|显示指定数据|
-|ACTION_DEIT|android.intent.action.DEIT|编辑指定数据|
-||||
+|ACTION_ATTACH_DATA|android.intent.action.ATTACH_DATA|指定某块数据将被附加到其他地方|
+|ACTION_EDIT|android.intent.action.EDIT|编辑指定数据|
+|ACTION_PIACK|android.intent.action.PICK|从列表中选择某项，并返回所选数据|
+|ACTION_CHOOSER|android.intent.action.CHOOSER|显示一个Activity选择器|
+|ACTION_GET_CONTENT|android.intent.action.GET_CONTENT|让用户选择数据，并返回所选数据|
+|ACTION_DIAL|android.intent.action.DIAL|显示拨号面板|
+|ACTION_CALL|android.intent.action.CALL|直接向指向用户打电话|
+|ACTION_SEND|android.intent.action.SEND|向其他人发送数据|
+|ACTION_SENDTO|android.intent.action.SENDTO|向他人发送消息|
+|ACTION_ANSWER|android.intent.action.ANSWER|应答电话|
+|ACTION_INSERT|android.intent.action.INSERT|插入数据|
+|ACTION_DELETE|android.intent.action.DELETE|删除数据|
+|ACTION_RUN|android.intent.action.RUN|运行数据|
+|ACTION_SYNC|android.intent.action.SYNC|执行数据同步|
+|ACTION_PICK_ACTIVITY|android.intent.action.PICK_ACTIVITY|用于选择Activity|
+|ACTION_SEARCH|android.intent.action.SEARCH|执行搜索|
+|ACTION_WEB_SEARCH|android.intent.action.WEB_SEARCH|执行web搜索|
+|ACTION_FACTORY_TEST|android.intent.action.FACTORY_TEST|工厂测试的入口点|
 
 ##### 启动Activity的标准Categroy:
 
-
-
+|Categroy常量|对应字符串|简单说明|
+|:---:|:---:|:---:|
+|CATEGROY_DEFAULT|android.intent.categroy.DEFAULT|默认的Categroy|
+|CATEGROY_BROWSABLE|android.intent.categroy.BROWSABLE|指定该Activity能被浏览器安全调用|
+|CATEGROY_TAB|android.intent.categroy.TAB|指定Activity作为TabActivity的Tab页|
+|CATEGROY_LAUNCHER|android.intent.categroy.LAUNCHER|Activity显示顶级程序列表中|
+|CATEGROY_INFO|android.intent.categroy.INFO|用于提供包信息|
+|CATEGROY_HOME|android.intent.categroy.HOME|设置该Activity随系统启动而运行|
+|CATEGROY_PREFFRERENCE|android.intent.categroy.PREFFRERENCE|该Activity是参数模板|
+|CATEGROY_TEST|android.intent.categroy.TEST|该Activity是一个测试|
+|CATEGROY_CAR_DOCK|android.intent.categroy.CAR_DOCK|指定手机被插入汽车底座时运行该Activity|
+|CATEGROY_DESK_DOCK|android.intent.categroy.DESK_DOCK|指定手机被插入桌面底座时运行该Activity|
+|CATEGROY_CAR_MODE|android.intent.categroy.CAR_MODE|设置该Activity可在车载环境下使用|
 
 #### Data、Type属性
 
@@ -129,4 +156,3 @@ Intent 中的`Action`、`Categroy`属性是Intent的启动要求，每个Intent 
 **注：**
 
 在配置`<Intent-filter../>`时，`<action../>`子元素的name是随意指定的。如果希望`<data../>`能正常工作，那么必须配置`<action../>`的一个子元素，该元素的`android:name`可以随意指定。
-
